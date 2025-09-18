@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from pydantic import BaseModel,Field
-from typing  import Optional
+from pydantic import BaseModel,Field,ConfigDict
+from typing  import Optional,List
 
 app = FastAPI()
 
@@ -19,20 +19,38 @@ class Book:
         self.rating = rating
 
 class BookRequest(BaseModel):
-    id:Optional[int]= None
+    id:Optional[int]= Field(description="Id is not needed on created", default=None)
     title:str= Field(min_length=3)
     author:str = Field(min_length=1)
     description:str = Field(min_length=1 , max_length=100)
     rating:int = Field(gt=-0 , lt= 6)
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "title": "A new book",
+                    "author": "codewithjeff",
+                    "description": "A new description of the book",
+                    "rating": 5
+                }
+            ]
+        }
+    )
 
-BOOKS = [
-    Book(1,"Computer Science", "Jafary Mdegela", "This is good book for computer programmng", 5),
-    Book(2,"Next frontend boo", "John Samson", "This is book for frontend-framework", 4),
-    Book(3,"React js", "Book for reactjs", "This is good book for frontendbook", 5),
-    Book(4,"Django Backend", "Stephen Grider", "Good for backend full stack", 3),
-    Book(5,"Flask Api Developement", "John Doe", "This is for backend developement", 3),
-    Book(6,"Backend Nodejs", "Juma Tone", "This is Flask Testing", 3)
+
+
+    
+
+    
+
+BOOKS: List[Book] = [
+    Book(id=1, title="Computer Science", author="Jafary Mdegela",
+         description="This is good book for computer programming", rating=5),
+    Book(id=2, title="Next frontend book", author="John Samson",
+         description="This is book for frontend-framework", rating=4),
+    Book(id=3, title="React js", author="Someone",
+         description="This is good book for frontend", rating=5),
 ]
 
 @app.get("/books")
