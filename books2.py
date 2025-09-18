@@ -37,13 +37,9 @@ class BookRequest(BaseModel):
             ]
         }
     )
-
-
-
-    
+ 
 
     
-
 BOOKS: List[Book] = [
     Book(id=1, title="Computer Science", author="Jafary Mdegela",
          description="This is good book for computer programming", rating=5),
@@ -56,6 +52,13 @@ BOOKS: List[Book] = [
 @app.get("/books")
 async def read_books():
     return BOOKS
+
+@app.get("/books/{book_id}")
+async def read_book(book_id:int):
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
+
 
 
 @app.post('/books/create_books')
